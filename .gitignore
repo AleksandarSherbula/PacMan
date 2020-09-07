@@ -1,0 +1,5 @@
+# Directories
+.git/
+.vs/
+bin/
+bin-int/
