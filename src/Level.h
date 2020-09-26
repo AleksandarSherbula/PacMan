@@ -11,7 +11,7 @@ private:
 	std::string Map;
 	int levelWidth;
 	int levelHeight;
-	Object* blackRects;
+	std::unique_ptr<Object> blackRects;
 	bool visiblePowerPellet;
 	float powerPelletFlickTime;
 public:

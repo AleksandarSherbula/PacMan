@@ -1,11 +1,15 @@
 #include "Ghost.h"
+#include <time.h>
 
 Ghost::Ghost(olc::PixelGameEngine* pge, GhostHouse gh, float noPelletTimer, int pelletCounter)
 	: MovingObject(pge)
 {
+	srand(time(NULL));
+
 	mode = GhostMode::SCATTER;
 	ghostHouse = gh;
 	initGhostHouse = gh;
+	invertDir = false;
 	this->noPelletTimer = noPelletTimer;
 	this->pelletCounter = pelletCounter;
 }
@@ -216,12 +220,64 @@ void Ghost::CheckDirection()
 
 void Ghost::FrightenedMode(Level* level)
 {
-	//newDir *= -1;	
+	if (invertDir)
+	{
+		newDir *= -1;
+		invertDir = false;
+	}	
 
-	//for (olc::vi2d& crossPos : level->crossOverPos)
-	//{
-	//
-	//}
+	for (olc::vi2d& crossPos : level->crossOverPos)
+	{
+		//std::cout << newDir << std::endl;
+		if (cmp(newPos, crossPos) && prevCrossPos != crossPos)
+		{
+			int dirID = rand() % 4;
+			std::cout << newDir << std::endl;
+			if (direction.y != 1 && dirID == 0)
+			{
+				if (level->WallOnSide(olc::vi2d(crossPos.x, crossPos.y - 1)))
+					dirID = GetRandomExcluding(0);
+				else
+					newDir = { 0, -1 };
+			}
+			if (direction.x != 1 && dirID == 1)
+			{
+				if (level->WallOnSide(olc::vi2d(crossPos.x - 1, crossPos.y)))
+					dirID = GetRandomExcluding(1);
+				else
+					newDir = { -1, 0 };
+			}
+			if (direction.y != -1 && dirID == 2)
+			{
+				if (level->WallOnSide(olc::vi2d(crossPos.x, crossPos.y + 1)))
+					dirID = GetRandomExcluding(2);
+				else
+					newDir = { 0, 1 };
+			}
+			if (direction.x != -1 && dirID == 3)
+			{
+				if (level->WallOnSide(olc::vi2d(crossPos.x + 1, crossPos.y)))
+					dirID = GetRandomExcluding(3);
+				else
+					newDir = { 1, 0 };
+			}
+			prevCrossPos = crossPos;
+			
+			//
+			//if (newDir.y == -1 && level->WallOnSide(olc::vi2d(crossPos.x, crossPos.y - 1))) newDir.y = 0;
+			//if (newDir.x == -1 && level->WallOnSide(olc::vi2d(crossPos.x - 1, crossPos.y))) newDir.x = 0;
+			//if (newDir.y ==  1 && level->WallOnSide(olc::vi2d(crossPos.x, crossPos.y + 1))) newDir.y = 0;
+			//if (newDir.x == 1 && level->WallOnSide(olc::vi2d(crossPos.x + 1, crossPos.y)))	newDir.x = 0;
+			//
+			//if (newDir.x != 0 && newDir.y != 0)
+			//{
+			//	if (newDir.y != -1)
+			//		newDir = { 0, 1 };
+			//	else
+			//		newDir = { 1, 0 };
+			//}		
+		}
+	}
 }
 
 void Ghost::Update(float fElapsedTime, Level* level, Player* player, const olc::vi2d& scatterTile, const olc::vi2d& chaseTile)
@@ -231,28 +287,16 @@ void Ghost::Update(float fElapsedTime, Level* level, Player* player, const olc::
 	ChangeMode(fElapsedTime, player->energized);	
 	
 	ModeBehaviour(level, scatterTile, chaseTile);
-	
-	// Ghost goes back to Scatter or Chase mode
-	if (player->energizedTimer > 6.9f)
-	{
-		if (ghostHouse == GhostHouse::GOING_SIDE || ghostHouse == GhostHouse::GOING_UP)
-			speed = initSpeed / 2;
-		else
-			speed = initSpeed;
 
-		mode = lastmode;
-		tileID.y = initTileID.y;
-	}
-
-	if (mode == GhostMode::SCATTER)			std::cout << 0 << std::endl;
-	if (mode == GhostMode::CHASE)			std::cout << 1 << std::endl;
-	if (mode == GhostMode::FRIGHTENED)		std::cout << 2 << std::endl;
+	//if (mode == GhostMode::SCATTER)			std::cout << 0 << std::endl;
+	//if (mode == GhostMode::CHASE)				std::cout << 1 << std::endl;
+	//if (mode == GhostMode::FRIGHTENED)		std::cout << 2 << std::endl;
 
 	// Ghost's speed and Frightened sprite can be activated at any time
 	if (mode == GhostMode::FRIGHTENED)
 	{
 		speed = initSpeed / 2;
-		tileID.y = 4;
+		tileID.y = 4;		
 	}
 	else
 	{
@@ -306,7 +350,7 @@ void Ghost::Update(float fElapsedTime, Level* level, Player* player, const olc::
 	{
 		WallHit(level);
 		
-		//if (mode != GhostMode::FRIGHTENED)
+		if (mode != GhostMode::FRIGHTENED)
 			Move(level);
 	}
 	
@@ -344,4 +388,13 @@ void Ghost::Restart()
 
 	CheckMode();
 	CheckDirection();
+}
+
+int GetRandomExcluding(int num)
+{
+	int res = rand() % 4;
+	if (res == num)
+		res = GetRandomExcluding(num);
+	else
+		return res;
 }

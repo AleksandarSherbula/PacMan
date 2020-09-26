@@ -8,6 +8,7 @@ public:
 	float speed;
 	
 	olc::vi2d direction;
+	olc::vi2d initTileID;
 protected:
 	float initSpeed;
 	olc::vf2d initPos;
@@ -15,9 +16,7 @@ protected:
 	olc::vi2d initDir;
 	olc::vi2d newDir;
 
-	olc::vf2d velocity;
-
-	olc::vi2d initTileID;
+	olc::vf2d velocity;	
 
 	Level* level;
 public:

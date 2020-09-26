@@ -12,18 +12,16 @@ public:
 	Game();
 	~Game();
 
-	//Player* player;
-	std::unique_ptr<Player> player;
-	std::unique_ptr<Ghost> ghost;
-	//Level* level;
-	std::unique_ptr<Level> level;
-	std::unique_ptr<Object> deadPacman;
+	std::unique_ptr<Player> player = nullptr;
+	std::unique_ptr<Ghost> ghost = nullptr;
+
+	std::unique_ptr<Level> level = nullptr;
+	std::unique_ptr<Object> deadPacman = nullptr;
 
 	float wait;
 	float waitDead;
 
 	bool isDead;
-	bool roundTwo;
 
 	bool OnUserCreate() override;
 	bool OnUserUpdate(float fElapsedTime) override;

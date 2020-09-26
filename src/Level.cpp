@@ -51,7 +51,7 @@ Level::Level(olc::PixelGameEngine* pge)
 
 	visiblePowerPellet = true;
 
-	blackRects = new Object(pge);
+	blackRects = std::make_unique<Object>(pge);
 	blackRects->SetSprite("BlackRects", true);
 	pelletCounter = 0;
 	noPelletTimer = 0.0f;

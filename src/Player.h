@@ -4,8 +4,6 @@
 
 class Player : public MovingObject
 {
-private:
-	Level* level;
 public:
 	bool energized = false;
 	float energizedTimer;

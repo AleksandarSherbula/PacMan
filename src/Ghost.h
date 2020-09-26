@@ -22,15 +22,17 @@ enum class GhostHouse
 class Ghost : public MovingObject
 {
 private:	
-	olc::vi2d targetTile;
-	GhostMode mode;
-	GhostMode lastmode;
+	olc::vi2d targetTile;	
 	GhostHouse ghostHouse;
 	GhostHouse initGhostHouse;
 	float timer;
 	olc::vf2d prevCrossPos;
 	float noPelletTimer;
 	int pelletCounter;
+public:
+	bool invertDir;
+	GhostMode mode;
+	GhostMode lastmode;
 public:
 	Ghost(olc::PixelGameEngine* pge, GhostHouse gh, float noPelletTimer, int pelletCounter);	
 
@@ -48,3 +50,5 @@ public:
 
 	void Restart() override;
 };
+
+int GetRandomExcluding(int num);

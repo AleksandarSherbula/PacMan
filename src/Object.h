@@ -8,8 +8,6 @@
 
 class ImageAssets
 {
-private:
-	using uptr = std::unique_ptr<olc::Sprite>;
 public:
 	static ImageAssets& get()
 	{
@@ -20,7 +18,7 @@ public:
 	ImageAssets(ImageAssets const&) = delete;
 	void operator=(ImageAssets const&) = delete;
 
-	std::map<std::string, std::unique_ptr<olc::Sprite>> Sprite;
+	std::map<std::string, std::shared_ptr<olc::Sprite>> Sprite;
 
 	void Clear();
 
@@ -35,7 +33,7 @@ public:
 	olc::vf2d position;	
 	olc::vi2d tileID;
 protected:
-	std::unique_ptr<olc::Sprite> sprite;
+	std::shared_ptr<olc::Sprite> sprite;
 	std::unique_ptr<olc::Decal> decal;
 	bool useDecal;
 	olc::PixelGameEngine* pge;

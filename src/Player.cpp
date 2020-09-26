@@ -13,53 +13,27 @@ void Player::Update(float fElapsedTime, Level* level)
 	if (pge->GetKey(olc::D).bPressed || pge->GetKey(olc::RIGHT).bPressed) newDir = { 1,  0 };
 	if (pge->GetKey(olc::W).bPressed || pge->GetKey(olc::UP).bPressed) newDir = { 0, -1 };
 	if (pge->GetKey(olc::S).bPressed || pge->GetKey(olc::DOWN).bPressed) newDir = { 0,  1 };
-
+	
 	newPos = position + velocity * fElapsedTime;
 	
 	WallHit(level);
-
+	
 	Move(level);
-
+	
 	position = newPos;
-
+	
 	CheckDirection();
-
+	
 	if (velocity.x != 0.0f || velocity.y != 0.0f)
 		Animate(0, 2, fElapsedTime, 0.045f);
 	else
 		if (tileID.x == 0)
 			tileID.x = 1;	
-
-	if (level->GetTile(position) == '*' ||
-		level->GetTile(position) == '0')
-	{
-		if (level->GetTile(position) == '*')
-		{
-			energized = true;
-			energizedTimer = 0.0f;
-		}
-
-		level->SetTile(position, '_');
-		level->pelletCounter++;
-		level->noPelletTimer = 0.0f;
-	}
-	else if (level->GetTile(position) == 'x' ||
-		level->GetTile(position) == 'X')
-	{
-		if (level->GetTile(position) == 'X')
-		{
-			energized = true;
-			energizedTimer = 0.0f;
-		}
-		level->SetTile(position, '+');
-		level->pelletCounter++;
-		level->noPelletTimer = 0.0f;
-	}
-
+	
 	if (energized)
 	{
 		energizedTimer += fElapsedTime;
-
+	
 		if (energizedTimer > 7.0f)
 		{
 			energizedTimer = 0.0f;

@@ -18,8 +18,8 @@ void ImageAssets::LoadSprites()
 {
 	auto load = [&](std::string name, std::string filename)
 	{
-		std::unique_ptr<olc::Sprite> s = std::make_unique<olc::Sprite>(filename);
-		Sprite[name] = std::move(s);
+		//std::shared_ptr<olc::Sprite> s = 
+		Sprite[name] = std::make_shared<olc::Sprite>(filename);
 	};
 
 	load("Pacman",		"assets/PacmanSpriteSheet.png");
@@ -49,7 +49,7 @@ Object::~Object()
 
 void Object::SetSprite(const std::string& name, bool useDecal)
 {
-	sprite = std::move(ImageAssets::get().Sprite[name]);
+	sprite = ImageAssets::get().Sprite[name];
 	this->useDecal = useDecal;
 
 	if (this->useDecal)
